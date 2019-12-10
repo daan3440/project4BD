@@ -137,6 +137,9 @@ if __name__ == "__main__":
 
     # TODO: Check for signs of overfitting (by evaluating the model on the training set)
     # [FIX ME!] Write code below
+    dt_predictions_default_train = dt_model_default.transform(train_tfidf)
+    auc_dt_default_train = evaluator.evaluate(dt_predictions_default_train, {evaluator.metricName: 'areaUnderROC'})
+    print('Decision Tree, Default Parameters, Training Set, AUC: ' + str(auc_dt_default_train))
 
     # TODO: Tune the decision tree model by changing one of its hyperparameters
     # Build and evalute decision trees with the following maxDepth values: 3 and 4.
