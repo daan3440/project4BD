@@ -48,7 +48,7 @@ if __name__ == "__main__":
     # Print the counts to standard output
     # [FIX ME!] Write code below
 
-    train_count = train.count()    
+    train_count = train.count()
     dev_count = dev.count()
     test_count = test.count()
     print (train_count)
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     train_pos = train.filter(dev["class_label"] == 1.0).count()
     dev_pos = dev.filter(dev["class_label"] == 1.0).count()
     test_pos = test.filter(dev["class_label"] == 1.0).count()
-    
+
 print("Train % pos:" + " %.2f" % (train_pos / train_count * 100))
 print("Dev % pos:" + " %.2f" % (dev_pos / dev_count * 100))
 print("Test % pos:" + " %.2f" % (test_pos / test_count * 100))
@@ -74,10 +74,13 @@ print("Test % pos:" + " %.2f" % (test_pos / test_count * 100))
     # Hint: see below for how to convert a list of (word, frequency) tuples to a list of words
     # stopwords = [frequency_tuple[0] for frequency_tuple in list_top100_tokens]
     # [FIX ME!] Write code below
+    train_token_count = train.select("words").rdd.flatMap(lambda x: x[0]).map(lambda x: (x, 1)).reduceByKey(lambda a,b: a+b)
+    top100_tokens = sorted(train_token_count.collect(), key=lambda x: x[1], reverse=True)[:100]
+    stopwords = [frequency_tuple[0] for frequency_tuple in top100_tokens]
 
     # TODO: Replace the [] in the stopWords parameter with the name of your created list
     # [FIX ME!] Modify code below
-    remover = StopWordsRemover(inputCol='words', outputCol='words_filtered', stopWords=[])
+    remover = StopWordsRemover(inputCol='words', outputCol='words_filtered', stopWords=stopwords)
 
     # Remove stopwords from all three subsets
     train_filtered = remover.transform(train)
@@ -91,7 +94,7 @@ print("Test % pos:" + " %.2f" % (test_pos / test_count * 100))
     train_data = cv_model.transform(train_filtered)
     dev_data = cv_model.transform(dev_filtered)
     test_data = cv_model.transform(test_filtered)
-    
+
     # TODO: Print the vocabulary size (to STDOUT) after filtering out stopwords and very rare tokens
     # Hint: Look at the parameters of CountVectorizer
     # [FIX ME!] Write code below
