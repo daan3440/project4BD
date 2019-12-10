@@ -48,10 +48,27 @@ if __name__ == "__main__":
     # Print the counts to standard output
     # [FIX ME!] Write code below
 
+    train_count = train.count()    
+    dev_count = dev.count()
+    test_count = test.count()
+    print (train_count)
+    print (dev_count)
+    print (test_count)
+
     # TODO: Count the number of positive/negative instances in, respectively, train, dev and test
     # Print the class distribution for each to standard output
     # The class distribution should be specified as the % of positive examples
     # [FIX ME!] Write code below
+
+    train_pos = train.filter(dev["class_label"] == 1.0).count()
+    dev_pos = dev.filter(dev["class_label"] == 1.0).count()
+    test_pos = test.filter(dev["class_label"] == 1.0).count()
+    
+print("Train % pos:" + " %.2f" % (train_pos / train_count * 100))
+print("Dev % pos:" + " %.2f" % (dev_pos / dev_count * 100))
+print("Test % pos:" + " %.2f" % (test_pos / test_count * 100))
+
+
 
     # TODO: Create a stopword list containing the 100 most frequent tokens in the training data
     # Hint: see below for how to convert a list of (word, frequency) tuples to a list of words
