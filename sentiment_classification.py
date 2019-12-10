@@ -64,9 +64,9 @@ if __name__ == "__main__":
     dev_pos = dev.filter(dev["class_label"] == 1.0).count()
     test_pos = test.filter(dev["class_label"] == 1.0).count()
 
-print("Train % pos:" + " %.2f" % (train_pos / train_count * 100))
-print("Dev % pos:" + " %.2f" % (dev_pos / dev_count * 100))
-print("Test % pos:" + " %.2f" % (test_pos / test_count * 100))
+    print("Train % pos:" + " %.2f" % (train_pos / train_count * 100))
+    print("Dev % pos:" + " %.2f" % (dev_pos / dev_count * 100))
+    print("Test % pos:" + " %.2f" % (test_pos / test_count * 100))
 
 
 
