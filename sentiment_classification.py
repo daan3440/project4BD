@@ -74,7 +74,7 @@ print("Test % pos:" + " %.2f" % (test_pos / test_count * 100))
     # Hint: see below for how to convert a list of (word, frequency) tuples to a list of words
     # stopwords = [frequency_tuple[0] for frequency_tuple in list_top100_tokens]
     # [FIX ME!] Write code below
-    train_token_count = train.select("words").rdd.flatMap(lambda x: x[0]).map(lambda x: (x, 1)).reduceByKey(lambda a,b: a+b)
+    train_token_count = train.select("review").rdd.flatMap(lambda x: x[0].split()).map(lambda x: (x, 1)).reduceByKey(lambda a,b: a+b)
     top100_tokens = sorted(train_token_count.collect(), key=lambda x: x[1], reverse=True)[:100]
     stopwords = [frequency_tuple[0] for frequency_tuple in top100_tokens]
 
