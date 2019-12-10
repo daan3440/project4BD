@@ -98,6 +98,7 @@ if __name__ == "__main__":
     # TODO: Print the vocabulary size (to STDOUT) after filtering out stopwords and very rare tokens
     # Hint: Look at the parameters of CountVectorizer
     # [FIX ME!] Write code below
+    print("Vocab size: %d" % len(train_data.select("BoW").head()[0]))
 
     # Create a TF-IDF representation of the data
     idf = IDF(inputCol='BoW', outputCol='TFIDF')
