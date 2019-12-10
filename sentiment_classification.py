@@ -98,7 +98,7 @@ if __name__ == "__main__":
     # TODO: Print the vocabulary size (to STDOUT) after filtering out stopwords and very rare tokens
     # Hint: Look at the parameters of CountVectorizer
     # [FIX ME!] Write code below
-    print("Vocab size: %d" % len(train_data.select("BoW").head()[0]))
+    print("Vocab size: %d" % len(cv_model.vocabulary))
 
     # Create a TF-IDF representation of the data
     idf = IDF(inputCol='BoW', outputCol='TFIDF')
@@ -134,42 +134,100 @@ if __name__ == "__main__":
 
     # Print result to standard output
     print('Decision Tree, Default Parameters, Development Set, AUC: ' + str(auc_dt_default_dev))
-
+    
     # TODO: Check for signs of overfitting (by evaluating the model on the training set)
     # [FIX ME!] Write code below
     dt_predictions_default_train = dt_model_default.transform(train_tfidf)
     auc_dt_default_train = evaluator.evaluate(dt_predictions_default_train, {evaluator.metricName: 'areaUnderROC'})
     print('Decision Tree, Default Parameters, Training Set, AUC: ' + str(auc_dt_default_train))
-
+    
     # TODO: Tune the decision tree model by changing one of its hyperparameters
     # Build and evalute decision trees with the following maxDepth values: 3 and 4.
     # [FIX ME!] Write code below
-
+    dt_classifier_depth_three = DecisionTreeClassifier(labelCol = 'label', featuresCol = 'TFIDF', maxDepth=3)
+    dt_classifier_depth_four = DecisionTreeClassifier(labelCol = 'label', featuresCol = 'TFIDF', maxDepth=4)
+    #dt_classifier_default = DecisionTreeClassifier(labelCol = 'label', featuresCol = 'TFIDF', maxDepth=5)
+    
+     # Create an ML pipeline for the decision tree model
+    dt_pipeline_depth_three = Pipeline(stages=[label_indexer, dt_classifier_depth_three])
+    dt_pipeline_depth_four = Pipeline(stages=[label_indexer, dt_classifier_depth_four])
+    
+    # Apply pipeline and train model
+    dt_model_depth_three = dt_pipeline_depth_three.fit(train_tfidf)
+    dt_model_depth_four = dt_pipeline_depth_four.fit(train_tfidf)
+    
+    # Apply model on devlopment data
+    dt_predictions_depth_three_dev = dt_model_depth_three.transform(dev_tfidf)
+    dt_predictions_depth_four_dev = dt_model_depth_four.transform(dev_tfidf)
+    dt_predictions_depth_three_train = dt_model_depth_three.transform(train_tfidf)
+    dt_predictions_depth_four_train = dt_model_depth_four.transform(train_tfidf)
+    
+    # Evaluate model using the AUC metric
+    auc_dt_depth_three_dev = evaluator.evaluate(dt_predictions_depth_three_dev, {evaluator.metricName: 'areaUnderROC'})
+    auc_dt_depth_four_dev = evaluator.evaluate(dt_predictions_depth_four_dev, {evaluator.metricName: 'areaUnderROC'})
+    auc_dt_depth_three_train = evaluator.evaluate(dt_predictions_depth_three_train, {evaluator.metricName: 'areaUnderROC'})
+    auc_dt_depth_four_train = evaluator.evaluate(dt_predictions_depth_four_train, {evaluator.metricName: 'areaUnderROC'})
+    
+    # Print result to standard output
+    print('Decision Tree, Depth Three, Development Set, AUC: ' + str(auc_dt_depth_three_dev))
+    print('Decision Tree, Depth Four, Development Set, AUC: ' + str(auc_dt_depth_four_dev))
+    print('Decision Tree, Depth Three, Training Set, AUC: ' + str(auc_dt_depth_three_train))
+    print('Decision Tree, Depth Four, Training Set, AUC: ' + str(auc_dt_depth_four_train))
+        
     # Train a random forest with default parameters (including numTrees=20)
     rf_classifier_default = RandomForestClassifier(labelCol = 'label', featuresCol = 'TFIDF', numTrees=20)
-
+    
     # Create an ML pipeline for the random forest model
     rf_pipeline_default = Pipeline(stages=[label_indexer, rf_classifier_default])
-
+    
     # Apply pipeline and train model
     rf_model_default = rf_pipeline_default.fit(train_tfidf)
-
+    
     # Apply model on development data
     rf_predictions_default_dev = rf_model_default.transform(dev_tfidf)
-
+    
     # Evaluate model using the AUC metric
     auc_rf_default_dev = evaluator.evaluate(rf_predictions_default_dev, {evaluator.metricName: 'areaUnderROC'})
-
+    
     # Print result to standard output
     print('Random Forest, Default Parameters, Development Set, AUC:' + str(auc_rf_default_dev))
-
+    
     # TODO: Check for signs of overfitting (by evaluating the model on the training set)
     # [FIX ME!] Write code below
+
+    # Apply model on development data
+    rf_predictions_default_train = rf_model_default.transform(train_tfidf)
+    
+    # Evaluate model using the AUC metric
+    auc_rf_default_train = evaluator.evaluate(rf_predictions_default_train, {evaluator.metricName: 'areaUnderROC'})
+    
+    # Print result to standard output
+    print('Random Forest, Default Parameters, Training Set, AUC:' + str(auc_rf_default_train))
 
     # TODO: Tune the random forest model by changing one of its hyperparameters
     # Build and evalute (on the dev set) another random forest with the following numTrees value: 100.
     # [FIX ME!] Write code below
-
+    rf_classifier_hundred = RandomForestClassifier(labelCol = 'label', featuresCol = 'TFIDF', numTrees=1000)
+    
+    # Create an ML pipeline for the random forest model
+    rf_pipeline_hundred = Pipeline(stages=[label_indexer, rf_classifier_hundred])
+    
+    # Apply pipeline and train model
+    rf_model_hundred = rf_pipeline_hundred.fit(train_tfidf)
+    
+    # Apply model on development data
+    rf_predictions_hundred_train = rf_model_hundred.transform(train_tfidf)
+    rf_predictions_hundred_dev = rf_model_hundred.transform(dev_tfidf)
+    
+    # Evaluate model using the AUC metric
+    auc_rf_hundred_train = evaluator.evaluate(rf_predictions_hundred_train, {evaluator.metricName: 'areaUnderROC'})
+    auc_rf_hundred_dev = evaluator.evaluate(rf_predictions_hundred_dev, {evaluator.metricName: 'areaUnderROC'})
+    
+    # Print result to standard output
+    print('Random Forest, Hundred Parameters, Training Set, AUC:' + str(auc_rf_hundred_train))
+    print('Random Forest, Hundred Parameters, Development Set, AUC:' + str(auc_rf_hundred_dev))
+    
+    
     # ----- PART IV: MODEL EVALUATION -----
 
     # Create a new dataset combining the train and dev sets
