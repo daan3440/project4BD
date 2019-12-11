@@ -51,9 +51,9 @@ if __name__ == "__main__":
     train_count = train.count()
     dev_count = dev.count()
     test_count = test.count()
-    print (train_count)
-    print (dev_count)
-    print (test_count)
+    print ("Train size: %d" % train_count)
+    print ("Dev size: %d" % dev_count)
+    print ("Test size: %d" % test_count)
 
     # TODO: Count the number of positive/negative instances in, respectively, train, dev and test
     # Print the class distribution for each to standard output
@@ -242,9 +242,8 @@ if __name__ == "__main__":
     auc_rf_hundred_dev = evaluator.evaluate(rf_predictions_hundred_dev, {evaluator.metricName: 'areaUnderROC'})
 
     # Print result to standard output for both training and development data.
-    print('Random Forest, Hundred Parameters, Training Set, AUC:' + str(auc_rf_hundred_train))
     print('Random Forest, Hundred Parameters, Development Set, AUC:' + str(auc_rf_hundred_dev))
-
+    print('Random Forest, Hundred Parameters, Training Set, AUC:' + str(auc_rf_hundred_train))
 
     # ----- PART IV: MODEL EVALUATION -----
 
