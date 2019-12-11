@@ -146,33 +146,41 @@ if __name__ == "__main__":
     # [FIX ME!] Write code below
     dt_classifier_depth_three = DecisionTreeClassifier(labelCol = 'label', featuresCol = 'TFIDF', maxDepth=3)
     dt_classifier_depth_four = DecisionTreeClassifier(labelCol = 'label', featuresCol = 'TFIDF', maxDepth=4)
-    #dt_classifier_default = DecisionTreeClassifier(labelCol = 'label', featuresCol = 'TFIDF', maxDepth=5)
+    dt_classifier_depth_thirty = DecisionTreeClassifier(labelCol = 'label', featuresCol = 'TFIDF', maxDepth=30)
     
      # Create an ML pipeline for the decision tree model
     dt_pipeline_depth_three = Pipeline(stages=[label_indexer, dt_classifier_depth_three])
     dt_pipeline_depth_four = Pipeline(stages=[label_indexer, dt_classifier_depth_four])
+    dt_pipeline_depth_thirty = Pipeline(stages=[label_indexer, dt_classifier_depth_thirty])
     
     # Apply pipeline and train model
     dt_model_depth_three = dt_pipeline_depth_three.fit(train_tfidf)
     dt_model_depth_four = dt_pipeline_depth_four.fit(train_tfidf)
+    dt_model_depth_thirty = dt_pipeline_depth_thirty.fit(train_tfidf)
     
-    # Apply model on devlopment data
+    # Apply model on devlopment data FIXa kommentarer
     dt_predictions_depth_three_dev = dt_model_depth_three.transform(dev_tfidf)
     dt_predictions_depth_four_dev = dt_model_depth_four.transform(dev_tfidf)
+    dt_predictions_depth_thirty_dev = dt_model_depth_thirty.transform(dev_tfidf)
     dt_predictions_depth_three_train = dt_model_depth_three.transform(train_tfidf)
     dt_predictions_depth_four_train = dt_model_depth_four.transform(train_tfidf)
+    dt_predictions_depth_thirty_train = dt_model_depth_thirty.transform(train_tfidf)
     
     # Evaluate model using the AUC metric
     auc_dt_depth_three_dev = evaluator.evaluate(dt_predictions_depth_three_dev, {evaluator.metricName: 'areaUnderROC'})
     auc_dt_depth_four_dev = evaluator.evaluate(dt_predictions_depth_four_dev, {evaluator.metricName: 'areaUnderROC'})
+    auc_dt_depth_thirty_dev = evaluator.evaluate(dt_predictions_depth_thirty_dev, {evaluator.metricName: 'areaUnderROC'})
     auc_dt_depth_three_train = evaluator.evaluate(dt_predictions_depth_three_train, {evaluator.metricName: 'areaUnderROC'})
     auc_dt_depth_four_train = evaluator.evaluate(dt_predictions_depth_four_train, {evaluator.metricName: 'areaUnderROC'})
+    auc_dt_depth_thirty_train = evaluator.evaluate(dt_predictions_depth_thirty_train, {evaluator.metricName: 'areaUnderROC'})
     
     # Print result to standard output
     print('Decision Tree, Depth Three, Development Set, AUC: ' + str(auc_dt_depth_three_dev))
     print('Decision Tree, Depth Four, Development Set, AUC: ' + str(auc_dt_depth_four_dev))
+    print('Decision Tree, Depth Thirty, Development Set, AUC: ' + str(auc_dt_depth_thirty_dev))
     print('Decision Tree, Depth Three, Training Set, AUC: ' + str(auc_dt_depth_three_train))
     print('Decision Tree, Depth Four, Training Set, AUC: ' + str(auc_dt_depth_four_train))
+    print('Decision Tree, Depth Thirty, Training Set, AUC: ' + str(auc_dt_depth_thirty_train))
         
     # Train a random forest with default parameters (including numTrees=20)
     rf_classifier_default = RandomForestClassifier(labelCol = 'label', featuresCol = 'TFIDF', numTrees=20)
