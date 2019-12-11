@@ -137,50 +137,54 @@ if __name__ == "__main__":
 
     # TODO: Check for signs of overfitting (by evaluating the model on the training set)
     # [FIX ME!] Write code below
+
+    # Apply model on training data
     dt_predictions_default_train = dt_model_default.transform(train_tfidf)
+
+    # Evaluate model using the AUC metric
     auc_dt_default_train = evaluator.evaluate(dt_predictions_default_train, {evaluator.metricName: 'areaUnderROC'})
+
+    # Print result to standard output
     print('Decision Tree, Default Parameters, Training Set, AUC: ' + str(auc_dt_default_train))
 
     # TODO: Tune the decision tree model by changing one of its hyperparameters
     # Build and evalute decision trees with the following maxDepth values: 3 and 4.
     # [FIX ME!] Write code below
+
+    # Create Decision Tree with maxDepth of 3 and 4.
     dt_classifier_depth_three = DecisionTreeClassifier(labelCol = 'label', featuresCol = 'TFIDF', maxDepth=3)
     dt_classifier_depth_four = DecisionTreeClassifier(labelCol = 'label', featuresCol = 'TFIDF', maxDepth=4)
-    dt_classifier_depth_thirty = DecisionTreeClassifier(labelCol = 'label', featuresCol = 'TFIDF', maxDepth=30)
 
      # Create an ML pipeline for the decision tree model
     dt_pipeline_depth_three = Pipeline(stages=[label_indexer, dt_classifier_depth_three])
     dt_pipeline_depth_four = Pipeline(stages=[label_indexer, dt_classifier_depth_four])
-    dt_pipeline_depth_thirty = Pipeline(stages=[label_indexer, dt_classifier_depth_thirty])
 
     # Apply pipeline and train model
     dt_model_depth_three = dt_pipeline_depth_three.fit(train_tfidf)
     dt_model_depth_four = dt_pipeline_depth_four.fit(train_tfidf)
-    dt_model_depth_thirty = dt_pipeline_depth_thirty.fit(train_tfidf)
 
-    # Apply model on devlopment data FIXa kommentarer
+    # Apply model on development data
     dt_predictions_depth_three_dev = dt_model_depth_three.transform(dev_tfidf)
     dt_predictions_depth_four_dev = dt_model_depth_four.transform(dev_tfidf)
-    dt_predictions_depth_thirty_dev = dt_model_depth_thirty.transform(dev_tfidf)
+
+    # Apply model on training data
     dt_predictions_depth_three_train = dt_model_depth_three.transform(train_tfidf)
     dt_predictions_depth_four_train = dt_model_depth_four.transform(train_tfidf)
-    dt_predictions_depth_thirty_train = dt_model_depth_thirty.transform(train_tfidf)
 
-    # Evaluate model using the AUC metric
+    # Evaluate model, on development data, using the AUC metric
     auc_dt_depth_three_dev = evaluator.evaluate(dt_predictions_depth_three_dev, {evaluator.metricName: 'areaUnderROC'})
     auc_dt_depth_four_dev = evaluator.evaluate(dt_predictions_depth_four_dev, {evaluator.metricName: 'areaUnderROC'})
-    auc_dt_depth_thirty_dev = evaluator.evaluate(dt_predictions_depth_thirty_dev, {evaluator.metricName: 'areaUnderROC'})
+
+    # Evaluate model, on training data, using the AUC metric, to check for overfitting
     auc_dt_depth_three_train = evaluator.evaluate(dt_predictions_depth_three_train, {evaluator.metricName: 'areaUnderROC'})
     auc_dt_depth_four_train = evaluator.evaluate(dt_predictions_depth_four_train, {evaluator.metricName: 'areaUnderROC'})
-    auc_dt_depth_thirty_train = evaluator.evaluate(dt_predictions_depth_thirty_train, {evaluator.metricName: 'areaUnderROC'})
 
-    # Print result to standard output
+    # Print result to standard output, for both traing and development data
     print('Decision Tree, Depth Three, Development Set, AUC: ' + str(auc_dt_depth_three_dev))
     print('Decision Tree, Depth Four, Development Set, AUC: ' + str(auc_dt_depth_four_dev))
-    print('Decision Tree, Depth Thirty, Development Set, AUC: ' + str(auc_dt_depth_thirty_dev))
+
     print('Decision Tree, Depth Three, Training Set, AUC: ' + str(auc_dt_depth_three_train))
     print('Decision Tree, Depth Four, Training Set, AUC: ' + str(auc_dt_depth_four_train))
-    print('Decision Tree, Depth Thirty, Training Set, AUC: ' + str(auc_dt_depth_thirty_train))
 
     # Train a random forest with default parameters (including numTrees=20)
     rf_classifier_default = RandomForestClassifier(labelCol = 'label', featuresCol = 'TFIDF', numTrees=20)
@@ -203,7 +207,7 @@ if __name__ == "__main__":
     # TODO: Check for signs of overfitting (by evaluating the model on the training set)
     # [FIX ME!] Write code below
 
-    # Apply model on development data
+    # Apply model on training data
     rf_predictions_default_train = rf_model_default.transform(train_tfidf)
 
     # Evaluate model using the AUC metric
@@ -215,6 +219,8 @@ if __name__ == "__main__":
     # TODO: Tune the random forest model by changing one of its hyperparameters
     # Build and evalute (on the dev set) another random forest with the following numTrees value: 100.
     # [FIX ME!] Write code below
+
+    # Create random forest with numTrees = 100
     rf_classifier_hundred = RandomForestClassifier(labelCol = 'label', featuresCol = 'TFIDF', numTrees=100)
 
     # Create an ML pipeline for the random forest model
@@ -225,13 +231,17 @@ if __name__ == "__main__":
 
     # Apply model on development data
     rf_predictions_hundred_train = rf_model_hundred.transform(train_tfidf)
+
+    # Apply model on training data
     rf_predictions_hundred_dev = rf_model_hundred.transform(dev_tfidf)
 
-    # Evaluate model using the AUC metric
+    # Evaluate model, on development data, using the AUC metric
     auc_rf_hundred_train = evaluator.evaluate(rf_predictions_hundred_train, {evaluator.metricName: 'areaUnderROC'})
+
+    # Evaluate model, on traing data, using the AUC metric, to check for overfitting
     auc_rf_hundred_dev = evaluator.evaluate(rf_predictions_hundred_dev, {evaluator.metricName: 'areaUnderROC'})
 
-    # Print result to standard output
+    # Print result to standard output for both training and development data.
     print('Random Forest, Hundred Parameters, Training Set, AUC:' + str(auc_rf_hundred_train))
     print('Random Forest, Hundred Parameters, Development Set, AUC:' + str(auc_rf_hundred_dev))
 
@@ -245,12 +255,23 @@ if __name__ == "__main__":
     # Build a new model from the concatenation of the train and dev sets in order to better utilize the data
     # [FIX ME!]
 
+    # Apply pipeline and train model on training/development set
     rf_model_hundred = rf_pipeline_hundred.fit(traindev_tfidf)
 
+    # Apply model on test data
     rf_predictions_hundred_test = rf_model_hundred.transform(test_tfidf)
+
+    # Evaluate model, on test data, using the AUC metric
     auc_rf_hundred_test = evaluator.evaluate(rf_predictions_hundred_test, {evaluator.metricName: 'areaUnderROC'})
+
+    # Print result to standard output for test data
     print('Random Forest, Hundred Parameters, Test Set, AUC:' + str(auc_rf_hundred_test))
 
+    # Apply model on training/development data, to check for overfitting
     rf_predictions_hundred_traindev = rf_model_hundred.transform(traindev_tfidf)
+
+    # Evaluate model, on training/development data, using the AUC metric
     auc_rf_hundred_traindev = evaluator.evaluate(rf_predictions_hundred_traindev, {evaluator.metricName: 'areaUnderROC'})
+
+    # Print result to standard output for training/development data
     print('Random Forest, Hundred Parameters, Training/Development Set, AUC:' + str(auc_rf_hundred_traindev))
