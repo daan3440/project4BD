@@ -7,7 +7,10 @@ from pyspark.ml.evaluation import BinaryClassificationEvaluator
 import sys
 from functools import reduce
 
-#daan test
+#Assigment 4 Group 23 BIGDATA HT2019
+#Erik Lavfors - erla5605
+#Daniel Andersson - daan3440
+
 # Function for combining multiple DataFrames row-wise
 def unionAll(*dfs):
     return reduce(DataFrame.unionAll, dfs)
@@ -67,8 +70,6 @@ if __name__ == "__main__":
     print("Train % pos:" + " %.2f" % (train_pos / train_count * 100))
     print("Dev % pos:" + " %.2f" % (dev_pos / dev_count * 100))
     print("Test % pos:" + " %.2f" % (test_pos / test_count * 100))
-
-
 
     # TODO: Create a stopword list containing the 100 most frequent tokens in the training data
     # Hint: see below for how to convert a list of (word, frequency) tuples to a list of words
